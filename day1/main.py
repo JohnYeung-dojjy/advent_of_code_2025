@@ -1,11 +1,18 @@
 from tqdm import tqdm
 
 def rotate(current: int, direction: str, value: int):
+    full_rotations, value = divmod(value, 100)
+    if value == 0:
+        return current, full_rotations
     if direction == "L":
-        current-=value
+        new_val=current-value
     elif direction == "R":
-        current+=value
-    return current%100
+        new_val=current+value
+    else:
+        raise ValueError("Invalid direction")
+    # special case, rotation to left from 0, shouldn't count click even if <= 0
+    clicked = not(0<new_val<100) if current>0 else 0
+    return new_val%100, full_rotations + clicked
 
 def parse_input():
     with open("day1/input.txt") as f:
@@ -16,14 +23,11 @@ def main():
     data = parse_input()
     state = 50
     password = 0
-    print(50)
     for line in tqdm(data):
         if len(line) < 2:
             continue
-        # print(line, line[0], line[1:])
-        state = rotate(state, line[0], int(line[1:]))
-        # print(line, "->", state)
-        password += state == 0
+        state, clicked = rotate(state, line[0], int(line[1:]))
+        password += clicked
     print(password)
 
 
