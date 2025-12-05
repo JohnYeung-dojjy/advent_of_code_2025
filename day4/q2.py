@@ -40,16 +40,11 @@ def main():
     processed_data = process_input(data)
     # print(processed_data)
     total_rolls_removed = 0
-    iter_limit = 1000
-    while True and iter_limit>0:
+    rolls_removed = 1
+    while rolls_removed>1:
         output = (convolve2d(processed_data, KERNEL, mode="same")<4) & processed_data
         processed_data[output==1]=0
         rolls_removed = output.sum()
-        iter_limit-=1
-        if iter_limit<=0:
-            break
-        if rolls_removed==0:
-            break
         # print(rolls_removed)
         total_rolls_removed += rolls_removed
         # print(output.astype(int))
